@@ -1,0 +1,7 @@
+* [鸟瞰 Docker | ￥ЯႭ1I0](https://yrq110.me/post/devops/overview-of-docker/)
+* [可能是你见过最完善的微前端解决方案 · Issue #43 · kuitos/kuitos.github.io](https://github.com/kuitos/kuitos.github.io/issues/43)
+* [为什么要引入 BFF | 飞鹰走码](https://lichangwei.github.io/2019/03/25/why-bff/)
+* [如何解构单体前端应用——前端应用的微服务式拆分 - Phodal | Phodal - A Growth Engineer](https://www.phodal.com/blog/how-to-build-a-microfrontend-framework-mooa/)
+* [大前端时代下的微前端架构：实现增量升级、代码解耦、独立部署-InfoQ](https://www.infoq.cn/article/03*BeU3zQegIbIytRsX9)
+* [微服务下使用 GraphQL 构建 BFF - 阅读 - 掘金](https://juejin.im/entry/5abca4416fb9a028b92d38dd)
+* [BFF —— Backend For Frontend - 简书](https://www.jianshu.com/p/eb1875c62ad3)
