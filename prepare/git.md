@@ -7,3 +7,4 @@
 * [Git - 打标签](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
 * [使用 Git Submodule 管理项目 - 开发工具 - 掘金](https://juejin.im/entry/59a0046b518825243d1f05be)
 * [最常见的 Git 问题和操作清单汇总 - 掘金](https://juejin.im/post/5d5d61e96fb9a06ace5254bd#heading-12)
+* [git-flight-rules/README_zh-CN.md at master · k88hudson/git-flight-rules](https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md)
