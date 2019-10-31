@@ -1,7 +1,13 @@
+- 什么是闭包
+- 深拷贝的实现
+- 浮点数运算精度问题
+- flex 和 grid 布局
+
+---
+
 * [前端小白半年准备，成功进入 BAT · Issue #16 · brickspert/blog](https://github.com/brickspert/blog/issues/16)
 * [前端面试与进阶指南](https://www.cxymsg.com/)
 * [awesome-coding-js](http://www.conardli.top/docs/)
-* [社招中级前端笔试面试题总结 - 掘金](https://juejin.im/post/5af3cc4af265da0ba3521028)
 * [前端该如何准备数据结构和算法？ - 掘金](https://juejin.im/post/5d5b307b5188253da24d3cd1)
 * [Lazyman 面试题尝解 · Issue #1 · Andesome/learning](https://github.com/Andesome/learning/issues/1)
 * [寒冬中的前端社招面试 - 掘金](https://juejin.im/post/5c8f30606fb9a070ef60996d)
@@ -23,7 +29,6 @@
 * [（下篇）中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂 - 掘金](https://juejin.im/post/5cc26dfef265da037b611738#heading-12)
 * [初级前端面试题 - 掘金](https://juejin.im/post/5d87985d6fb9a06add4e6ac3#heading-92)
 * [11 道浏览器原理面试题 - 掘金](https://juejin.im/post/5d89798d6fb9a06b102769b1)
-* [一年经验前端 杭州几家二线厂面试题梳理 - 掘金](https://juejin.im/post/5d3a538bf265da1b9163d947)
 * [大厂前端面试考什么？| hpoenixf's blog](http://hpoenixf.com/%E5%A4%A7%E5%8E%82%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E8%80%83%E4%BB%80%E4%B9%88.html)
 * [高级前端进阶博文 | 木易杨前端进阶](https://muyiy.cn/blog/)
 * [js 基础-面试官想知道你有多理解 call,apply,bind？[不看后悔系列] - 掘金](https://juejin.im/post/5d469e0851882544b85c32ef?utm_source=gold_browser_extension)
