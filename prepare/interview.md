@@ -23,7 +23,6 @@
 * [（下篇）中高级前端大厂面试秘籍，寒冬中为您保驾护航，直通大厂 - 掘金](https://juejin.im/post/5cc26dfef265da037b611738#heading-12)
 * [初级前端面试题 - 掘金](https://juejin.im/post/5d87985d6fb9a06add4e6ac3#heading-92)
 * [11 道浏览器原理面试题 - 掘金](https://juejin.im/post/5d89798d6fb9a06b102769b1)
-* [【react 面试题】不可错过的 react 面试题 「务必收藏」 - 前端观澜 - SegmentFault 思否](https://segmentfault.com/a/1190000016761186)
 * [一年经验前端 杭州几家二线厂面试题梳理 - 掘金](https://juejin.im/post/5d3a538bf265da1b9163d947)
 * [大厂前端面试考什么？| hpoenixf's blog](http://hpoenixf.com/%E5%A4%A7%E5%8E%82%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95%E8%80%83%E4%BB%80%E4%B9%88.html)
 * [高级前端进阶博文 | 木易杨前端进阶](https://muyiy.cn/blog/)
