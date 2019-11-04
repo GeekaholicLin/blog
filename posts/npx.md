@@ -12,5 +12,3 @@
 - `--no-install` 可以强制使用本地模块
 - `--ignore-existing` 可以强制使用远程模块
 - `--shell-auto-fallback` 会在 shell 命令找不到的时候，使用 npx 调用作为回退方案。当正确设置之后（比如 `.zshrc` 中可以加入 `npx` 插件），直接使用 `npm@4 --version` 相当于使用 `npx npm@4 --version`。常规 npx 用法和回调的不同在于，回调不安装新包，除非你使用 `pkg@version` 语法。而在本地项目中调用 `mocha --version` 相当于 `npx mocha --version`，也就是 `node-modules/.bin/mocha --version`
-
-本地 [123](http://www.baidu.com/11) 本地
