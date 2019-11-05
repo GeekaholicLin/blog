@@ -1,5 +1,4 @@
 - 什么是闭包
-- 深拷贝的实现
 - 浮点数运算精度问题
 - flex 和 grid 布局
 
@@ -9,7 +8,6 @@
 * [前端面试与进阶指南](https://www.cxymsg.com/)
 * [awesome-coding-js](http://www.conardli.top/docs/)
 * [前端该如何准备数据结构和算法？ - 掘金](https://juejin.im/post/5d5b307b5188253da24d3cd1)
-* [Lazyman 面试题尝解 · Issue #1 · Andesome/learning](https://github.com/Andesome/learning/issues/1)
 * [寒冬中的前端社招面试 - 掘金](https://juejin.im/post/5c8f30606fb9a070ef60996d)
 * [（建议收藏）原生 JS 灵魂之问，请问你能接得住几个？（上） - 掘金](https://juejin.im/post/5dac5d82e51d45249850cd20)
 * [闭包 - JavaScript | MDN](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures)
@@ -42,3 +40,11 @@
 * [【Step-By-Step】高频面试题深入解析 / 周刊 03 - 掘金](https://juejin.im/post/5cfdc5c7f265da1b8a4f10f3)
 * [【Step-By-Step】高频面试题深入解析 / 周刊 02 - 掘金](https://juejin.im/post/5cf392e75188250d2850f97d)
 * [【Step-By-Step】高频面试题深入解析 / 周刊 01 - 掘金](https://juejin.im/post/5cea6e5fe51d45775e33f4de)
+* [ljianshu/Blog: 关注基础知识，打造优质前端博客，公众号 [前端工匠] 的作者](https://github.com/ljianshu/Blog)
+* [azl397985856/leetcode: LeetCode Solutions: A Record of My Problem Solving Journey.( leetcode 题解，记录自己的 leetcode 解题之路。)](https://github.com/azl397985856/leetcode)
+* [FEInterviewBox/剑指 offer at master · 14glwu/FEInterviewBox](https://github.com/14glwu/FEInterviewBox/tree/master/%E5%89%91%E6%8C%87offer)
+* [LeetCode 算法题刷题心得（JavaScript） - 前端 - 掘金](https://juejin.im/entry/5af391bc51882567203410f1)
+* [javascript-algorithms/README.zh-CN.md at master · trekhleb/javascript-algorithms](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
+* [🐧 腾讯精选练习（50 题） - 力扣（LeetCode）](https://leetcode-cn.com/problemset/50/)
+* [（建议精读）原生 JS 灵魂之问（中），检验自己是否真的熟悉 JavaScript？ - 掘金](https://juejin.im/post/5dbebbfa51882524c507fddb#heading-33)
+* [记一次大厂的面试过程 - 掘金](https://juejin.im/post/5db556376fb9a0207a6ddce7#heading-13)

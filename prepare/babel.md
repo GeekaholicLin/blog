@@ -1,3 +1,5 @@
+plugins 的插件顺序是顺序，而 preset 是逆序
+
 * [一口（很长的）气了解 babel - 知乎](https://zhuanlan.zhihu.com/p/43249121)
 * [新世界的大门 Babel macros - 知乎](https://zhuanlan.zhihu.com/p/64346538)
 * [kentcdodds/babel-plugin-macros: 🎣 Allows you to build simple compile-time libraries](https://github.com/kentcdodds/babel-plugin-macros)
@@ -8,7 +10,6 @@
 * [babel 插件入门-AST（抽象语法树） - 掘金](https://juejin.im/post/5ab9f2f3f265da239b4174f0)
 * [【第六期】babel 深入教程（babel7 版本） - 掘金](https://juejin.im/post/5d259116f265da1bb277595a)
 * [面试官 (7): 聊一聊 Babel? - 掘金](https://juejin.im/post/5c03b85ae51d450c740de19c)
-* [这可能是最通俗的 React Fiber（时间分片） 打开方式 - 掘金](https://juejin.im/post/5dadc6045188255a270a0f85)
 * [深入浅出 Babel 上篇：架构和原理 + 实战 - 掘金](https://juejin.im/post/5d94bfbf5188256db95589be)
 * [CodeSandbox 浏览器端的 webpack 是如何工作的？ 上篇 - 掘金](https://juejin.im/post/5d1e0dea51882514bf5bedfa)
 * [从 Preact 中了解 React 组件和 hooks 基本原理 - 掘金](https://juejin.im/post/5cfa29e151882539c33e4f5e)
