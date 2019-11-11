@@ -306,6 +306,46 @@ console.log(generate(ast).code)
 - `@babel/template`：模版引擎，提供句法占位符以及标识符占位符，可以将大量的代码字符串转换为 AST，方便**后续**对 AST 进行操作
 - `@babel/helper-*`：辅助函数，用于辅助插件开发
 
+#### @babel/types 的使用
+
+`@babel/types`对每一个节点的类型都有一个定义，通过这个节点类型的定义可以知道其节点有哪些属性又在哪些位置（比如二元表达式分为操作符、左表达式和右表达式三个属性，左表达式在运算符左边，右表达式同理）、节点的值是否合法、如何构建该节点、如何遍历节点以及节点的别名。
+
+我们先来看一下一个节点类型的定义，然后根据类型定义推导出其他信息。
+
+```js
+defineType("BinaryExpression", {
+  builder: ["operator", "left", "right"],
+  fields: {
+    operator: {
+      validate: assertValueType("string")
+    },
+    left: {
+      validate: assertNodeType("Expression")
+    },
+    right: {
+      validate: assertNodeType("Expression")
+    }
+  },
+  visitor: ["left", "right"],
+  aliases: ["Binary", "Expression"]
+});
+```
+
+上面的代码是一个二元表达式`BinaryExpression`的定义。
+
+这个定义中`builder`构造器属性指示了二元表达式的组成，再结合各个部分的`validate`属性，可以推导出二元表达式节点的构造方式 -- `t.binaryExpression("*", t.identifier("a"), t.identifier("b"))`，先是一个字符串类型的运算符，然后是表达式类型的左表达式和右表达式。
+
+而各个部分的`validate`属性就是`validator`验证器了，其用于表明组成当前节点的子节点的类型以及验证方式。当代码中组成节点的子节点类型，与定义对应的验证器不符，**可以选择**返回布尔值或者抛出异常。
+
+```js
+t.isBinaryExpression(maybeBinaryExpressionNode) // types.isxxxx() 返回布尔值
+t.isBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }) // 同上，且限制了相关子节点的精确匹配值
+t.assertBinaryExpression(maybeBinaryExpressionNode); // types.assertxxxx() 如果不通过抛出异常
+t.assertBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }); // 同上，且限制相关子节点的精确匹配值
+```
+
+#### @babel/template 的使用
+
 ```js
 // @babel/template 的使用
 import template from "@babel/template";
