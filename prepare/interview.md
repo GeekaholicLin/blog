@@ -2,8 +2,8 @@
 - 浮点数运算精度问题
 - flex 和 grid 布局
 - 各种排序，背包问题，二叉树算法
-- 有哪些的隐藏内容的方法
 - CSS 媒体查询
+- CSS transition 以及 animation
 - SPA、SEO 与 SSR
 - React 的 diff 算法
 - React 的 setState
@@ -21,35 +21,17 @@
 
 ---
 
-- CSS3 中 transition 和 animation 的属性分别有哪些
-transition 过渡动画：
-(1) transition-property：属性名称
-(2) transition-duration: 间隔时间
-(3) transition-timing-function: 动画曲线
-(4) transition-delay: 延迟
-animation 关键帧动画：
-(1) animation-name：动画名称
-(2) animation-duration: 间隔时间
-(3) animation-timing-function: 动画曲线
-(4) animation-delay: 延迟
-(5) animation-iteration-count：动画次数
-(6) animation-direction: 方向
-(7) animation-fill-mode: 禁止模式
-
----
-
 * [前端面试与进阶指南](https://www.cxymsg.com/)
 * [awesome-coding-js](http://www.conardli.top/docs/)
 * [心谭博客](https://xin-tan.com/)
 * [前端进阶之道](https://yuchengkai.cn/home/)
 * [高级前端进阶博文 | 木易杨前端进阶](https://muyiy.cn/blog/)
 
+* [azl397985856/leetcode](https://github.com/azl397985856/leetcode)
+* [FEInterviewBox/剑指 offer](https://github.com/14glwu/FEInterviewBox/tree/master/%E5%89%91%E6%8C%87offer)
+* [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
+
 * [前端面试总结（at, md） - 掘金](https://juejin.im/post/5a3134bf6fb9a0452405d507)
 * [面试官：你有 m 个鸡蛋，如何用最少的次数测出鸡蛋会在哪一层碎？ - 掘金](https://juejin.im/post/5d9ede57518825358b221349)
 * [拜托，面试官别问我「布隆」了 - 掘金](https://juejin.im/post/5c959ff8e51d45509e2ccf84)
 * [中高级前端大厂面试秘籍，为你保驾护航金三银四，直通大厂（上）](https://juejin.im/post/5c64d15d6fb9a049d37f9c20)
-* [这儿有 20 道大厂面试题等你查收 - 掘金](https://juejin.im/post/5d124a12f265da1b9163a28d)
-* [azl397985856/leetcode](https://github.com/azl397985856/leetcode)
-* [FEInterviewBox/剑指 offer](https://github.com/14glwu/FEInterviewBox/tree/master/%E5%89%91%E6%8C%87offer)
-* [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
-* [（建议精读）原生 JS 灵魂之问（中），检验自己是否真的熟悉 JavaScript？ - 掘金](https://juejin.im/post/5dbebbfa51882524c507fddb)
