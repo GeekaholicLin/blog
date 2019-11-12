@@ -10,7 +10,13 @@ Babel 是 JavaScript 编译器（或者说转换器），用于处理 JavaScript
 - 作为 Webpack 等构建工具的插件`babel-loader`等
 - 直接使用`babel-core`，用编程的方式使用
 
-使用方式有所不同，但实际上都是调用的`babel-core`
+使用方式有所不同，但实际上都是调用的`babel-core`。`babel-core`的作用在于：
+
+- 加载和处理配置
+- 加载插件
+- 调用`babylon`解析器将代码处理成 AST
+- 调用`babel-traverse`遍历 AST，并应用插件对 AST 进行转换
+- 调用`babel-generator`生成代码，包括 source map 以及源代码
 
 ### 运行方式
 
@@ -18,9 +24,9 @@ Babel 总共分为三个阶段：解析（parse）、转换（transform）以及
 
 ![Babel 运行过程](http://image.geekaholic.cn/20191107114744.png@0.8)
 
-- 解析：将代码通过 Babel 编译器`babylon`（基于 [acorn](https://github.com/acornjs/acorn)，后改名为`@babel/parser`）转换为 [ESTree](https://github.com/estree/estree) 规范（此规范为 Mozilla 的工程师给出的 SpiderMonkey 引擎输出的 JavaScript AST 规范） 的 AST 抽象语法树
-- 转换：通过`babel-traverse`遍历访问 AST 节点，并对其进行相关操作，进行转换生成新的 AST
-- 生成：使用`babel-generator`以新的 AST 生成新的代码
+- 解析：将代码通过 Babel 编译器`babylon`（基于 [acorn](https://github.com/acornjs/acorn)，后改名为`@babel/parser`）转换为 [ESTree](https://github.com/estree/estree) 规范（此规范为 SpiderMonkey 引擎输出的 JavaScript AST 规范） 的 AST 抽象语法树
+- 转换：通过`babel-traverse`遍历访问 AST 节点，并对其进行相关操作（`babel-core`中的相关`transform`接口），进行转换生成新的 AST。这是最复杂的部分，也是 Babel 插件介入的部分。
+- 生成：使用`babel-generator`以新的 AST 生成新的代码，同时还可以创建 source map
 
 Babel 本身不具有转换功能，转换功能都被分解到 plugin 中，所以当未配置插件的时候，经过 Babel 后输出的代码与输入代码是相同的。
 
