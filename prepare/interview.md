@@ -3,7 +3,6 @@
 - flex 和 grid 布局
 - 各种排序，背包问题，二叉树算法
 - CSS 媒体查询
-- CSS transition 以及 animation
 - SPA、SEO 与 SSR
 - React 的 diff 算法
 - React 的 setState
