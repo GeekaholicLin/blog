@@ -87,7 +87,7 @@ _必须使用括号`()`包裹起来，否则无效。_
 - orientation：指定了设备处于横屏（宽度大于宽度）模式`landscape`还是竖屏（高度大于宽度）模式`portrait`。需要注意的是，在移动端软键盘唤起的时候，`portrait`可能会变成`landscape`。例子：`@media (orientation: portrait){}`
 
 - device-pixel-ratio：设备像素比，接受 min/max。`@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)`。但这是非标准媒体特性，经常需要和标准的媒体特性`resolution`进行搭配。
-- resolution: 指定输出设备的**像素密度**，接受 min/max。接受`dpi`以及`dppx`作为值，其中`dppx`的兼容性较差，`1 ddpx`等于`1 dpr`
+- resolution: 指定输出设备的**像素密度**，接受 min/max。接受`dpi`以及`dppx`作为值，其中`dppx`的兼容性较差，`1 ddpx`等于`dpr: 1`（`ddpx`是单位而`dpr`是属性）
 
 ```scss
 // 代码来自：https://css-tricks.com/snippets/css/retina-display-media-query/
