@@ -1,8 +1,6 @@
 - 什么是闭包：函数与对其状态即词法环境（lexical environment）的引用共同构成闭包（closure）
 - 浮点数运算精度问题
-- flex 和 grid 布局
 - 各种排序，背包问题，二叉树算法
-- CSS 媒体查询
 - SPA、SEO 与 SSR
 - React 的 diff 算法
 - React 的 setState
@@ -34,3 +32,4 @@
 * [面试官：你有 m 个鸡蛋，如何用最少的次数测出鸡蛋会在哪一层碎？ - 掘金](https://juejin.im/post/5d9ede57518825358b221349)
 * [拜托，面试官别问我「布隆」了 - 掘金](https://juejin.im/post/5c959ff8e51d45509e2ccf84)
 * [中高级前端大厂面试秘籍，为你保驾护航金三银四，直通大厂（上）](https://juejin.im/post/5c64d15d6fb9a049d37f9c20)
+* [2 万 5 千字大厂面经 | 掘金技术征文 - 掘金](https://juejin.im/post/5ba34e54e51d450e5162789b)
