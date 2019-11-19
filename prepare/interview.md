@@ -1,7 +1,6 @@
 - 什么是闭包：函数与对其状态即词法环境（lexical environment）的引用共同构成闭包（closure）
 - 浮点数运算精度问题
 - 各种排序，背包问题，二叉树算法
-- SPA、SEO 与 SSR
 - React 的 diff 算法
 - React 的 setState
 - React 的合成事件
