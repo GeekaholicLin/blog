@@ -91,7 +91,7 @@
 - `GBS`为`x11`：`11 > 10`，那么说明是大于一半，需要进 1
 - `GBS`为`x10`：这种情况就是前面说的「五」，这时候就看`x`的取值了。如果是偶数`0`，则舍弃；如果是奇数`1`，则需要进 1。
 - `GBS`为`x01`：说明是小于一半的，舍弃
-- `GBS`为`x00`：说明是小于一半，舍弃
+- `GBS`为`x00`：说明是精确值，不需要舍入
 
 可以看课件图片中的例子体会一下「四舍六入五取偶」在二进制中的使用。
 
@@ -479,17 +479,23 @@ Math.round(1.335 * 100) / 100; // 1.34
 
 如果我们想从「数量级」的角度来让等式成立，借助舍入策略的进一从而得到`Infinity`，则**至少**也得让结果的`GBS`为`110`，那么这个加数在**对阶后**的尾数的第 53 位至少是`1`，这个`1`是尾数的整数部分对阶过来的，所以此加数对阶后的阶为 1023，尾数整体为`2^-53`，表示为`2^1023 * 2^-53`，根据「对阶不会改变数值大小」，所以加数本身就是`2^(1023-53)`。
 
-从数学关系上推导，加数至少为`2^(1023-52)`；从数量级上推导，加数至少为`2^(1023-53)`。之所以从数量级推导的加数更小，是因为利用了舍入策略。
+从数学关系上推导，加数至少为`2^(1023-52)`；从数量级上推导，加数至少为`2^(1023-53)`。之所以从数量级推导出来的加数更小，是因为利用了舍入策略。
 
 ```js
-Number.MAX_VALUE + Math.pow(2, 1023 - 52) === Number.POSITIVE_INFINITY; // true
-Number.MAX_VALUE + Math.pow(2, 1023 - 53) === Number.POSITIVE_INFINITY; // true
+Number.MAX_VALUE + Math.pow(2, 1023 - 52) === Number.POSITIVE_INFINITY; // 语句 1，true
+Number.MAX_VALUE + Math.pow(2, 1023 - 53) === Number.POSITIVE_INFINITY; // 语句 2，true
+Number.MAX_VALUE + IEEEToDouble(`0 11111001001 ${'0'.repeat(52)}`) === Number.POSITIVE_INFINITY // 语句 3，与语句 2 等价，true
+Number.MAX_VALUE + Math.pow(2, 1023 - 53) - 1 === Number.POSITIVE_INFINITY; // 语句 4，true。表述「比 Math.pow(2, 1023 - 53) 小 1」不能这么使用，因为数量级的关系
+
+Number.MAX_VALUE + IEEEToDouble(`0 11111001000 ${'1'.repeat(52)}`) === Number.POSITIVE_INFINITY // 语句 5，false。真正意义上表述「比 Math.pow(2, 1023 - 53) 小 1」
+// 表述「比 Math.pow(2, 1023 - 53) 小 1」，尾数部分应该使用累加
+IEEEToDouble(`0 11111001000 ${'1'.repeat(52)}`) === Math.pow(2, 969) * (1+[...Array(52)].reduce((total, _, index) => total+= Math.pow(2, -(index+1)), 0))
 ```
 
 综合地来看上面三个问题，可以概括为「浮点数的表示超出尾数的有效位数，舍入策略带来的精度损失使得两数相等」，而超出尾数的有效位数主要有两个场景：十进制转二进制的转换过程，以及运算过程的对阶和规格化。
 
 - [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
-
+$a^2+b^2=c^2$
 `Math.log10(Math.pow(2, 53)) === 16` => 16 大概是这么来的？
 Number.EPSILON 的精度问题：Number.EPSILON 只适用于数量级为`10^0`（这里给出一个例子）
 // TODO:
