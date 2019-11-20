@@ -1,1 +1,0 @@
-* [Thunks in Redux: The Basics - Fullstack Academy - Medium](https://medium.com/fullstack-academy/thunks-in-redux-the-basics-85e538a3fe60)

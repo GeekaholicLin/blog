@@ -128,3 +128,16 @@ Git 使用两种标签：轻标签以及注解标签。轻标签只有名字，�
 ### reflog
 
 ### cherry-pick
+
+---
+
+* [git reset --hard 操作后的数据恢复 - 掘金](https://juejin.im/post/5af0438f5188251b8015967e)
+* [Pull Request 的命令行管理 - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2017/07/pull_request.html)
+* [git bisect 命令教程 - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2018/12/git-bisect.html)
+* [彻底搞懂 Git-Rebase - Jartto's blog](http://jartto.wang/2018/12/11/git-rebase/)
+* [1. 添加轻标签【教程 2 操作标签】| 猴子都能懂的 GIT 入门 | 贝格乐（Backlog）](https://backlog.com/git-tutorial/cn/stepup/stepup5_2.html)
+* [7. merge --squash【教程 3 改写提交！】| 猴子都能懂的 GIT 入门| 贝格乐（Backlog）](https://backlog.com/git-tutorial/cn/stepup/stepup7_7.html)
+* [Git - 打标签](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%89%93%E6%A0%87%E7%AD%BE)
+* [使用 Git Submodule 管理项目 - 开发工具 - 掘金](https://juejin.im/entry/59a0046b518825243d1f05be)
+* [最常见的 Git 问题和操作清单汇总 - 掘金](https://juejin.im/post/5d5d61e96fb9a06ace5254bd#heading-12)
+* [git-flight-rules/README_zh-CN.md at master · k88hudson/git-flight-rules](https://github.com/k88hudson/git-flight-rules/blob/master/README_zh-CN.md)

@@ -23,7 +23,6 @@
 * [「译」React Fiber 那些事：深入解析新的协调算法 - ES2049 Studio - SegmentFault 思否](https://segmentfault.com/a/1190000017241034)
 * [首页 · React 源码解析](https://react.jokcy.me/)
 * [React Scheduler 源码详解（1） - 掘金](https://juejin.im/post/5c32c0c86fb9a049b7808665)
-* [这可能是最通俗的 React Fiber（时间分片） 打开方式 - 掘金](https://juejin.im/post/5dadc6045188255a270a0f85)
 * [React 源码分析 - Diff 算法 - 掘金](https://juejin.im/post/5aa163df518825557b4c4f0a)
 * [React 源码剖析系列 － 不可思议的 react diff - 知乎](https://zhuanlan.zhihu.com/p/20346379)
 * [React 源码深度解读（十）：Diff 算法详解 - 有赞美业前端团队 - SegmentFault 思否](https://segmentfault.com/a/1190000017039293)
@@ -84,4 +83,4 @@
 [React 16 新特性](https://cloud.tencent.com/developer/article/1494092)
 * [你真的理解 setState 吗？ - 掘金](https://juejin.im/post/5b45c57c51882519790c7441)
 * [Aw, Snap! Something went wrong while displaying this webpage.](https://blog.joouis.com/2018/05/25/optimization-road-of-count-down-timer/)
-* [首页 | 前端进阶之道](https://yuchengkai.cn/home/)
+* [从 Preact 中了解 React 组件和 hooks 基本原理 - 掘金](https://juejin.im/post/5cfa29e151882539c33e4f5e)

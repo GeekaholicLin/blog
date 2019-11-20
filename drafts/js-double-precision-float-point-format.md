@@ -181,14 +181,22 @@ JavaScript 内置对象 `Number` 中有一些属性，用于表示常见的常�
 判断一个数是否是安全整数，可以使用`Number.isSafeInteger()`：
 
 ```js
-Number.isInteger = Number.isInteger || function(value) {
-  return typeof value === 'number' &&
-    isFinite(value) &&
-    Math.floor(value) === value;
-};
-Number.isSafeInteger = Number.isSafeInteger || function (value) {
-   return Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER;
-};
+Number.isInteger =
+  Number.isInteger ||
+  function(value) {
+    return (
+      typeof value === "number" &&
+      isFinite(value) &&
+      Math.floor(value) === value
+    );
+  };
+Number.isSafeInteger =
+  Number.isSafeInteger ||
+  function(value) {
+    return (
+      Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER
+    );
+  };
 ```
 
 #### Number.MAX_VALUE
@@ -330,62 +338,67 @@ Number.isSafeInteger = Number.isSafeInteger || function (value) {
 ```js
 // 浮点数转二进制字符串
 function DoubleToIEEE(decimal) {
-    var buf = new ArrayBuffer(8);
-    (new Float64Array(buf))[0] = decimal;
-    const hi = new Uint32Array(buf)[1].toString(2).padStart(32, '0')
-    const lo = new Uint32Array(buf)[0].toString(2).padStart(32, '0')
-    const sign = hi.slice(0, 1)
-    const exponent = hi.slice(1, 12)
-    const mantissa = `${hi.slice(12)}${lo}`
-    return `${sign} ${exponent} ${m}`
+  var buf = new ArrayBuffer(8);
+  new Float64Array(buf)[0] = decimal;
+  const hi = new Uint32Array(buf)[1].toString(2).padStart(32, "0");
+  const lo = new Uint32Array(buf)[0].toString(2).padStart(32, "0");
+  const sign = hi.slice(0, 1);
+  const exponent = hi.slice(1, 12);
+  const mantissa = `${hi.slice(12)}${lo}`;
+  return `${sign} ${exponent} ${m}`;
 }
 // 尾数累加，转换为小数
-function processMantissa(mantissaStr){
-    const LEN = 52
-    const arr = mantissaStr.split('')
-    return arr.reduce((total, num, index) => {
-        return total+= +num * Math.pow(2, -(index+1))
-    }, 0)
+function processMantissa(mantissaStr) {
+  const LEN = 52;
+  const arr = mantissaStr.split("");
+  return arr.reduce((total, num, index) => {
+    return (total += +num * Math.pow(2, -(index + 1)));
+  }, 0);
 }
 // 二进制字符串转浮点数
-function IEEEToDouble(binaryStr){
-   const arr = binaryStr.split(' ')
-   let sign, exponent, mantissa
-   if(arr && arr.length === 3){
-     sign = arr[0]
-     exponent = arr[1]
-     mantissa = arr[2]
-   } else {
-     sign = binaryStr.slice(0, 1)
-     exponent = binaryStr.slice(1, 12)
-     mantissa = binaryStr.slice(12)
-   }
-   return (
-       Math.pow(-1, parseInt(sign, 2))
-       * Math.pow(2, parseInt(exponent, 2) - 1023)
-       * (1 + processMantissa(mantissa))
-   )
+function IEEEToDouble(binaryStr) {
+  const arr = binaryStr.split(" ");
+  let sign, exponent, mantissa;
+  if (arr && arr.length === 3) {
+    sign = arr[0];
+    exponent = arr[1];
+    mantissa = arr[2];
+  } else {
+    sign = binaryStr.slice(0, 1);
+    exponent = binaryStr.slice(1, 12);
+    mantissa = binaryStr.slice(12);
+  }
+  return (
+    Math.pow(-1, parseInt(sign, 2)) *
+    Math.pow(2, parseInt(exponent, 2) - 1023) *
+    (1 + processMantissa(mantissa))
+  );
 }
 // 尾数累加，转换为小数
-function processMantissa(mantissaStr){
-    const LEN = 52
-    const arr = mantissaStr.split('')
-    return arr.reduce((total, num, index) => {
-        return total+= +num * Math.pow(2, -(index+1))
-    }, 0)
+function processMantissa(mantissaStr) {
+  const LEN = 52;
+  const arr = mantissaStr.split("");
+  return arr.reduce((total, num, index) => {
+    return (total += +num * Math.pow(2, -(index + 1)));
+  }, 0);
 }
 console.log(`
    ${DoubleToIEEE(0.1)}
 +  ${DoubleToIEEE(0.2)}
-=  ${DoubleToIEEE(0.1+0.2)}
-`)
-console.log(IEEEToDouble("0 01111111101 0011001100110011001100110011001100110011001100110100"))
+=  ${DoubleToIEEE(0.1 + 0.2)}
+`);
+console.log(
+  IEEEToDouble(
+    "0 01111111101 0011001100110011001100110011001100110011001100110100"
+  )
+);
 ```
+
 #### 题外话
 
 那为什么 C 语言中的双精度浮点数运算的结果就等于`0.3`呢？
 
-``` c
+```c
 int main()
 {
   double a = 0.1;
@@ -395,7 +408,7 @@ int main()
 
 ```
 
-这是因为`%lf`的完整格式为`%a.bf`，其中`a`为输出数据的宽度，默认无限制；`b`为输出数据的精度，默认值为`6`，所以打印了`0.3`，而当提高输出精度` printf("%.17f", a+b)`就会打印`0.30000000000000004`
+这是因为`%lf`的完整格式为`%a.bf`，其中`a`为输出数据的宽度，默认无限制；`b`为输出数据的精度，默认值为`6`，所以打印了`0.3`，而当提高输出精度`printf("%.17f", a+b)`就会打印`0.30000000000000004`
 
 ### 如何用`Math.pow()`去模拟`Number.MIN_VALUE`等 Number 的常量？
 
@@ -437,9 +450,9 @@ Math.pow(2, 1024) === Number.POSITIVE_INFINITY
 `toFixed`和`Math.round()`都是用于取整。`Math.round()`是日常生活中使用的「四舍五入」且是转换成整数，而`Number.prototype.toFixed()`则是上面说到的「四舍六入五取偶」。以保留 `1.335` 的小数点后两位为例，可以看到舍入的策略有所不同。
 
 ```js
-+(1.335).toFixed(2) // 1.33
++(1.335).toFixed(2); // 1.33
 // 因为 Math.round 是处理整数的舍入，所以得先进行乘法然后再使用除法
-Math.round(1.335 * 100) / 100 // 1.34
+Math.round(1.335 * 100) / 100; // 1.34
 ```
 
 ### 为什么`(1.33500000000000001).toFixed(2) === '1.33'`而不是`'1.34'`
@@ -466,7 +479,7 @@ Math.round(1.335 * 100) / 100 // 1.34
 
 综合地来看上面三个问题，可以概括为「因为精度损失使得两数相等」，而精度损失又主要有两个形式--转换过程中舍入策略或对阶过程中
 
-* [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
+- [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
 
 `Math.log10(Math.pow(2, 53)) === 16` => 16 大概是这么来的？
 Number.EPSILON 的精度问题：Number.EPSILON 只适用于数量级为`10^0`（这里给出一个例子）
@@ -482,12 +495,12 @@ Number.EPSILON 的精度问题：Number.EPSILON 只适用于数量级为`10^0`�
 
 ## 参考及工具
 
-* [该死的 IEEE-754 浮点数，说「约」就「约」，你的底线呢？以 JS 的名义来好好查查你](https://juejin.im/entry/58f484af570c350056410bc8)
-* [JavaScript 浮点数陷阱及解法](https://github.com/camsong/blog/issues/9)
-* [Double-precision floating-point format - Wikipedia](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
-* [javascript 的精度问题](https://fatshen3.cn/2018/05/29/javascript-float/)
-* [Number.EPSILON 及其它属性 – cselftrain](https://cselftrain.wordpress.com/2016/11/15/number-epsilon%E5%8F%8A%E5%85%B6%E5%AE%83%E5%B1%9E%E6%80%A7/)
+- [该死的 IEEE-754 浮点数，说「约」就「约」，你的底线呢？以 JS 的名义来好好查查你](https://juejin.im/entry/58f484af570c350056410bc8)
+- [JavaScript 浮点数陷阱及解法](https://github.com/camsong/blog/issues/9)
+- [Double-precision floating-point format - Wikipedia](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)
+- [javascript 的精度问题](https://fatshen3.cn/2018/05/29/javascript-float/)
+- [Number.EPSILON 及其它属性 – cselftrain](https://cselftrain.wordpress.com/2016/11/15/number-epsilon%E5%8F%8A%E5%85%B6%E5%AE%83%E5%B1%9E%E6%80%A7/)
 
-* [小数转换浮点数可视化工具](http://www.binaryconvert.com/convert_double.html)
-* [IEEE 754 在线计算器](http://weitz.de/ieee/)
-* [big.js: 用于任意精度的十进制运算库](https://github.com/MikeMcl/big.js/)
+- [小数转换浮点数可视化工具](http://www.binaryconvert.com/convert_double.html)
+- [IEEE 754 在线计算器](http://weitz.de/ieee/)
+- [big.js: 用于任意精度的十进制运算库](https://github.com/MikeMcl/big.js/)
