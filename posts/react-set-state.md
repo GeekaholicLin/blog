@@ -12,8 +12,8 @@
 promise.then(() => {
   // 强制批量更新
   ReactDOM.unstable_batchedUpdates(() => {
-    this.setState({a: true}); // Doesn't re-render yet
-    this.setState({b: true}); // Doesn't re-render yet
+    this.setState({ a: true }); // Doesn't re-render yet
+    this.setState({ b: true }); // Doesn't re-render yet
     this.props.setParentState(); // Doesn't re-render yet
   });
   // 当退出 ReactDOM.unstable_batchedUpdates 后，重新渲染一次
@@ -45,7 +45,9 @@ state 的更新是按照`setState`的出现顺序进行浅合并（shallowly mer
 
 更多信息请查看 [相关问答](https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates)
 
+## 源码深入 (TODO:)
+
 ### 参考
 
-* [第 18 题：React 中 setState 什么时候是同步的，什么时候是异步的？ · Issue #17 · Advanced-Frontend/Daily-Interview-Question](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/17)
-* [你真的理解 setState 吗？ - 掘金](https://juejin.im/post/5b45c57c51882519790c7441)
+- [第 18 题：React 中 setState 什么时候是同步的，什么时候是异步的？](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/17)
+- [你真的理解 setState 吗？ - 掘金](https://juejin.im/post/5b45c57c51882519790c7441)
