@@ -8,7 +8,7 @@
 4. 为什么`(1.33500000000000001).toFixed(2) === '1.33'`而不是`'1.34'`？
 5. 为什么`Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2`？
 6. 为什么`0.100000000000000002 === 0.100000000000000010`？
-7. 大于`Number.MAX_VALUE`的数表示无穷大，那为什么`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`？
+7. 大于`Number.MAX_VALUE`的数表示无穷大，那为什么`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`？要使得等于`Number.POSITIVE_INFINITY`，`Number.MAX_VALUE`至少应该加上多少？
 
 特别地，问题 5-7 归结为「相等判定与数量级」问题。
 
@@ -247,7 +247,7 @@ Number.isSafeInteger =
 0 11111111111 0000000000000000000000000000000000000000000000000000
 ```
 
-从直观上看就是，`Number.POSITIVE_INFINITY = Number.MAX_VALUE + 1`，但是实际上`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`（为什么？后面章节会讲）。`Number.MAX_VALUE`是一个无限接近于`2^1024`的数，而`Math.pow(2, 1024) === Infinity`
+从存储结构上看，`Number.POSITIVE_INFINITY = Number.MAX_VALUE + 1`，但是实际上`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`（为什么？后面章节会讲）。`Number.MAX_VALUE`是一个无限接近于`2^1024`的数，而`Math.pow(2, 1024) === Infinity`
 
 `Number.NEGATIVE_INFINITY`则是`Number.POSITIVE_INFINITY`的符号位取反，值为`- Infinity`，负无穷。
 
@@ -465,19 +465,28 @@ Math.round(1.335 * 100) / 100; // 1.34
 
 - 为什么`Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2`
 - 为什么`0.100000000000000002 === 0.100000000000000010`？
-- 大于`Number.MAX_VALUE`的数表示无穷大，那为什么`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`？
+- 大于`Number.MAX_VALUE`的数表示无穷大，那为什么`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`？要使得等于`Number.POSITIVE_INFINITY`，`Number.MAX_VALUE`至少应该加上多少？
 
 在 JavaScript 中，数字的全等判断是看在以双精度浮点数的存储格式进行存储时，64 个比特是否全部相等。
 
-首先看`Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2`，前面讲述最大安全数的时候说是因为超出了最大安全数，使得尾数的表示时存在「四舍六入五取偶」的舍入，两数经过舍入策略，得到的整数是一样的，都为`9007199254740992`。
+首先看`Number.MAX_SAFE_INTEGER + 1 === Number.MAX_SAFE_INTEGER + 2`，前面讲述最大安全数的时候说是因为超出了最大安全数，使得尾数在表示时超出尾数有效位数，存在「四舍六入五取偶」的舍入，而两数经过舍入策略得到的整数是一样的，都为`9007199254740992`。
 
-至于`0.100000000000000002 === 0.100000000000000010`，是因为在转换为双精度浮点数二进制表示的时候，尾数超出了 52 位，通过「四舍六入五取偶」的舍入，两数的 64 位比特位相等，如下图所示。
+至于`0.100000000000000002 === 0.100000000000000010`，是因为在转换为双精度浮点数二进制表示的时候，尾数超出尾数有效位数，通过「四舍六入五取偶」的舍入，两数的 64 位比特位相等，如下图所示。
 
 ![](http://image.geekaholic.cn/20191119234756.png@0.8)
 
-而`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`如果从数学关系式上来分析，`Math.pow(2, 1023) * (2 - Math.pow(2, -52))) === Number.MAX_VALUE`转换一下得到`Number.MAX_VALUE + Math.pow(2, 1023-52) === Math.pow(2, 1024) === Infinity`，也就是说至少得加`Math.pow(2, 1023-52)`才行。在这里，也可以从「数量级」的角度进行分析：表达式`Number.MAX_VALUE + 1`在运算的过程中`1`相对于`Number.MAX_VALUE`而言，在对阶的时候 (TODO:)，~~~`1`的`GBS`为`001`，舍弃变成`0`~~~，所以`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`是因为对阶时精度损失造成的。
+而对于`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`，如果从数学关系式上来分析，`Math.pow(2, 1023) * (2 - Math.pow(2, -52)) === Number.MAX_VALUE`转换一下得到`Number.MAX_VALUE + Math.pow(2, 1023-52) === Math.pow(2, 1024) === Infinity`，也就是说至少得加`Math.pow(2, 1023-52)`才行。在这里，也可以从「数量级」的角度进行分析：表达式`Number.MAX_VALUE + 1`在运算的过程中`1`相对于`Number.MAX_VALUE`而言，在对阶且求和后，结果的`GBS`为`101`，舍弃变成`0`，所以`Number.POSITIVE_INFINITY !== Number.MAX_VALUE + 1`依然为`Number.MAX_VALUE`。
 
-综合地来看上面三个问题，可以概括为「因为精度损失使得两数相等」，而精度损失又主要有两个形式--转换过程中舍入策略或对阶过程中
+如果我们想从「数量级」的角度来让等式成立，借助舍入策略的进一从而得到`Infinity`，则**至少**也得让结果的`GBS`为`110`，那么这个加数在**对阶后**的尾数的第 53 位至少是`1`，这个`1`是尾数的整数部分对阶过来的，所以此加数对阶后的阶为 1023，尾数整体为`2^-53`，表示为`2^1023 * 2^-53`，根据「对阶不会改变数值大小」，所以加数本身就是`2^(1023-53)`。
+
+从数学关系上推导，加数至少为`2^(1023-52)`；从数量级上推导，加数至少为`2^(1023-53)`。之所以从数量级推导的加数更小，是因为利用了舍入策略。
+
+```js
+Number.MAX_VALUE + Math.pow(2, 1023 - 52) === Number.POSITIVE_INFINITY; // true
+Number.MAX_VALUE + Math.pow(2, 1023 - 53) === Number.POSITIVE_INFINITY; // true
+```
+
+综合地来看上面三个问题，可以概括为「浮点数的表示超出尾数的有效位数，舍入策略带来的精度损失使得两数相等」，而超出尾数的有效位数主要有两个场景：十进制转二进制的转换过程，以及运算过程的对阶和规格化。
 
 - [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
 
