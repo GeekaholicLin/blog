@@ -56,7 +56,7 @@
 * [[译] Virtual Dom 和 Diff 算法在 React 中是如何工作的？ - 掘金](https://juejin.im/post/5c504f736fb9a049ef26fcd3)
 * [QQ 音乐：React v16 新特性实践 - 掘金](https://juejin.im/post/5b2236016fb9a00e9c47cb6b)
 * [2019 年了，整理了 N 个实用案例帮你快速迁移到 React Hooks（收藏慢慢看系列） - 掘金](https://juejin.im/post/5d594ea5518825041301bbcb#heading-52)
-* [第 18 题：React 中 setState 什么时候是同步的，什么时候是异步的？ · Issue #17 · Advanced-Frontend/Daily-Interview-Question](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/17)
+
 * [React 高效渲染策略 · Issue #15 · fi3ework/blog](https://github.com/fi3ework/blog/issues/15)
 * [KieSun/react-interpretation: React 源码解析](https://github.com/KieSun/react-interpretation)
 * [CodeSandbox](https://codesandbox.io/s/github/kentcdodds/learn-react-hooks)
@@ -81,6 +81,6 @@
 * [react-window](https://react-window.now.sh/#/api/FixedSizeList)
 * [Build 100% type-safe React apps in vanilla JavaScript](https://medium.com/@martin_hotell/build-100-type-safe-react-apps-in-vanilla-javascript-bd29a8364078)
 [React 16 新特性](https://cloud.tencent.com/developer/article/1494092)
-* [你真的理解 setState 吗？ - 掘金](https://juejin.im/post/5b45c57c51882519790c7441)
 * [Aw, Snap! Something went wrong while displaying this webpage.](https://blog.joouis.com/2018/05/25/optimization-road-of-count-down-timer/)
 * [从 Preact 中了解 React 组件和 hooks 基本原理 - 掘金](https://juejin.im/post/5cfa29e151882539c33e4f5e)
+* [React fiber 源码理解 - 知乎](https://zhuanlan.zhihu.com/p/77294188)

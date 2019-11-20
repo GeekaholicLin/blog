@@ -2,7 +2,6 @@
 - 浮点数运算精度问题
 - 各种排序，背包问题，二叉树算法
 - React 的 diff 算法
-- React 的 setState
 - React 的合成事件
 - redux 与 react-redux 等
 - 对合成层的理解
