@@ -5,9 +5,7 @@
 - 中文输入触发多次问题研究 https://segmentfault.com/a/1190000013094932
 - redux 与 react-redux 等
 - 对合成层的理解
-- webpack 基础与深入（chunk、bundle 和 module 有什么区别？hash、chunkhash 和 contenthash 的区别）
 - 活动倒计时的精确
-- 你最近有看过什么书？最近在研究的技术是什么？
 
 ---
 
