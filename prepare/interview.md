@@ -30,3 +30,5 @@
 - [中高级前端大厂面试秘籍，为你保驾护航金三银四，直通大厂（上）](https://juejin.im/post/5c64d15d6fb9a049d37f9c20)
 - [2 万 5 千字大厂面经 | 掘金技术征文 - 掘金](https://juejin.im/post/5ba34e54e51d450e5162789b)
 - [youngwind/blog: 梁少峰的个人博客](https://github.com/youngwind/blog)
+
+- [🚵 前端性能优化之旅 | 前端性能优化](https://alienzhou.github.io/fe-performance-journey/)
