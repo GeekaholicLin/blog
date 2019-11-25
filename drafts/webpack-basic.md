@@ -26,13 +26,79 @@ webpack 是基于入口的，是一个可高度配置的现代 JavaScript 应用
 
 ![超级详细的构建流程](http://image.geekaholic.cn/20191121161717.png@0.8)
 
-### 什么是 Webpack 热更新？并说明其流程和原理
+### 什么是 Webpack 热更新？并说明其处理流程
 
 webpack 的热更新（HMR，Hot Module Replacement）指对代码修改并保存后，webpack 将会对代码进行重新打包，并将改动的模块发送到浏览器端，浏览器用新的模块替换掉旧的模块，去实现局部更新页面而非整体刷新页面。
 
 优点在于可以保存应用的状态，提高开发效率。
 
-// TODO: [Webpack Hot Module Replacement 的原理解析 · Issue #15 · Jocs/jocs.github.io](https://github.com/Jocs/jocs.github.io/issues/15)
+> 它只能与实现和理解 HMR API 的 loader 一起使用，比如`style-loader`和`react-hot-loader`。
+
+![流程图](http://image.geekaholic.cn/20191125131055.png@0.8)
+
+步骤为：
+
+1. 在启动 devserver 的时候，使用`socketjs`在服务端`webpack-dev-server`和浏览器端`webpack-dev-server/client`建立 websocket 长链接，并使用 webpack api 监听 compiler 的`done`事件
+
+```js
+// webpack-dev-server/lib/Server.js
+compiler.plugin('done', (stats) => {
+  // stats.hash 是最新打包文件的 hash 值
+  this._sendStats(this.sockets, stats.toJson(clientStats));
+  this._stats = stats;
+});
+...
+Server.prototype._sendStats = function (sockets, stats, force) {
+  if (!force && stats &&
+  (!stats.errors || stats.errors.length === 0) && stats.assets &&
+  stats.assets.every(asset => !asset.emitted)
+  ) { return this.sockWrite(sockets, 'still-ok'); }
+  // 调用 sockWrite 方法将 hash 值通过 websocket 发送到浏览器端
+  this.sockWrite(sockets, 'hash', stats.hash);
+  if (stats.errors.length > 0) { this.sockWrite(sockets, 'errors', stats.errors); }
+  else if (stats.warnings.length > 0) { this.sockWrite(sockets, 'warnings', stats.warnings); } 	  	else { this.sockWrite(sockets, 'ok'); }
+};
+```
+
+1. 借助`memory-fs`，webpack 对文件系统进行 watch 打包到内存中。
+2. 在文件发生改变后，webpack 重新编译，回调 webpack-dev-server 的`done`事件监听函数，然后 webpack-dev-server 将 hash 值通过 websocket 发送到浏览器端`webpack-dev-server/client`。
+3. 当`webpack-dev-server/client`接收到 hash 消息的时候先暂存，随后在接收到 ok 消息，就进行 reload 操作，而 `webpack-dev-server/client`会根据 hot 配置决定 reload 操作是刷新浏览器还是 HRM
+
+```js
+// webpack-dev-server/client/index.js
+hash: function msgHash(hash) {
+    currentHash = hash;
+},
+ok: function msgOk() {
+    // ...
+    reloadApp();
+},
+// ...
+function reloadApp() {
+  // ...
+  if (hot) {
+    log.info('[WDS] App hot update...');
+    const hotEmitter = require('webpack/hot/emitter');
+    hotEmitter.emit('webpackHotUpdate', currentHash);
+    // ...
+  } else {
+    log.info('[WDS] App updated. Reloading...');
+    self.location.reload();
+  }
+}
+```
+
+![](http://image.geekaholic.cn/20191125130853.png@0.8)
+
+4. 从上边代码可以看出，当 HRM 的时候触发`webpackHotUpdate`事件，这会使得监听了`webpackHotUpdate`的`webpack/hot/dev-server`调用`HMR runtime`中的 check 方法。
+5. check 方法中使用`JSONP runtime`中的`hotDownloadManifest`和`hotDownloadUpdateChunk`方法，分别的作用是前者调用 AJAX 请求`${hash}.hot-update.json`查看是否有更新（如果有更新，json 文件中有包含更新的文件列表），而后者是根据需要更新列表拼接文件名`${moduleId}.${hash}.hot-update.js`并以 JSONP 的形式请求该文件
+
+![](http://image.geekaholic.cn/20191125130928.png@0.8)
+
+6. JSONP 文件请求后其实就是调用的`webpackHotUpdate`方法，找到旧的模块及其依赖并对其进行删除，接着使用`moduleId`作为 key 进行重新赋值，同时`webpack/hot/dev-server`会根据结果是否报错进行决定是否刷新浏览器作为回退方案。
+7. HRM 只是更新了模块，但是不知道业务代码无法得知是否 HRM 且如何应用 HRML，所以借助其他工具比如`react-hot-loader`，在 HRM 的时候进行一定的更新操作。这也是为什么 React HRM 需要在入口处应用`hot(module)(App)`进行改造。
+
+本小节参考 [Webpack Hot Module Replacement 的原理解析 · Issue #15 · Jocs/jocs.github.io](https://github.com/Jocs/jocs.github.io/issues/15)
 
 ### chunk、bundle 和 module 有什么区别？
 
@@ -57,6 +123,36 @@ compiler 是针对 webpack 的，是不变的 webpack 环境，而 compilation �
 - hash：compilation 的 hash 值，跟整个项目的构建相关，只要项目里有文件更改，整个项目构建的 hash 值都会更改，并且全部文件都共用相同的 hash 值
 - chunkhash：chunk 的 hash 值，根据不同的入口文件 (Entry) 进行依赖文件解析、构建对应的 chunk，生成对应的哈希值。其依赖的模块更新但本身不更新，这个 chunk 也会更新。比如导入 CSS 的 JS 文件，在修改 CSS 的时候（并于之后通过插件分离成单独一个包），不仅仅 CSS 的 chunkhash 会更新，JS 的 chunkhash 也会更新，因为两者是属于同一个 chunk。相反地，只修改 JS 不修改 CSS，两者也会一起更新
 - contenthash：目前推荐使用，只与输出的包的内容有关
+
+### 如何正确缓存构建？
+
+除了 hash 要选择 contenthash 以外，还需要对 webpack 内部的 chunk 和 module 进行正确的命名处理。因为每个 `module.id` 会默认地基于解析顺序 (resolve order) 进行增量。也就是说，当解析顺序发生变化，ID 也会随之改变，所以命名很重要（正式环境配置`moduleIds`即可，其他三项用于开发环境的调试）。
+
+以下配置都是配置项`optimization`的子项。
+
+#### namedModule 以及 namedChunks
+
+以下图片来自 [文章](https://segmentfault.com/a/1190000017066322)。
+
+`optimization.namedModules` 表示是否给 module 更有意义的名称，方便调试。开发模式默认打开，正式模式默认关闭。会应用`NamedModulesPlugin`，采用模块的路径而不是 ID 数字，但是此插件会使得构建时间变长。一般建议保持默认。
+
+`namedModules: true`以及`namedModules: false`的对比：
+
+![](http://image.geekaholic.cn/20191125110940.png@0.8)
+
+![](http://image.geekaholic.cn/20191125110953.png@0.8)
+
+`optimization.namedChunks` 表示是否给 chunk 更有意义的名称，方便调试。开发模式默认打开，正式模式默认关闭。
+
+`namedChunks: true`以及`namedChunks: false`的对比：
+
+![](http://image.geekaholic.cn/20191125111145.png@0.8)
+![](http://image.geekaholic.cn/20191125111155.png@0.8)
+
+#### chunkIds 以及 moduleIds
+
+- chunkIds：告诉 webpack 选择 chunk id 的时候选用哪种方式。可以配置为`chunkIds: 'named'`便于调试。
+- moduleIds: 告诉 webpack 选择 module id 的时候选用哪种方式。为了能够正确应用缓存，一般在正式环境使用`moduleIds: 'hashed'`或者`moduleIds: 'deterministic'`，分别调用了`HashedModuleIdsPlugin`和`DeterministicModuleIdsPlugin`，区别在于后者的哈希串更短（默认`maxLength: 3`）。在 webpack 5 中，正式环境模式将`moduleIds: 'deterministic'`设置为了默认。
 
 ### webpack-dev-server 和 http 服务器有什么区别？
 
@@ -227,12 +323,6 @@ module.exports = {
 };
 ```
 
-### sourceMap 的使用
-
-- [打破砂锅问到底：详解 Webpack 中的 sourcemap - 教练，我想写前端 - SegmentFault 思否](https://segmentfault.com/a/1190000008315937)
-- [SourceMapDevToolPlugin | webpack](https://webpack.js.org/plugins/source-map-dev-tool-plugin/#root)
-- [Devtool | webpack](https://webpack.js.org/configuration/devtool/)
-
 ## Loader 和 Plugin
 
 ### loader 和 plugin 的区别
@@ -268,6 +358,7 @@ loader 用于转换某些类型的模块，而 plugin 则可以用于执行范�
 
 - html-webpack-plugin：在编译后，根据提高的模版文件，分析依赖关系，自动插入 bundle 等资源
 - define-plugin：定义环境变量（实则是在编译的时候替换，类似「宏」）
+- CleanWebpackPlugin：在配置以后，每次打包时，清空所配置的文件夹
 
 ### 简述如何编写 Loader
 
