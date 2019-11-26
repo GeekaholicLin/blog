@@ -484,18 +484,36 @@ Math.round(1.335 * 100) / 100; // 1.34
 ```js
 Number.MAX_VALUE + Math.pow(2, 1023 - 52) === Number.POSITIVE_INFINITY; // 语句 1，true
 Number.MAX_VALUE + Math.pow(2, 1023 - 53) === Number.POSITIVE_INFINITY; // 语句 2，true
-Number.MAX_VALUE + IEEEToDouble(`0 11111001001 ${'0'.repeat(52)}`) === Number.POSITIVE_INFINITY // 语句 3，与语句 2 等价，true
+Number.MAX_VALUE + IEEEToDouble(`0 11111001001 ${"0".repeat(52)}`) ===
+  Number.POSITIVE_INFINITY; // 语句 3，与语句 2 等价，true
 Number.MAX_VALUE + Math.pow(2, 1023 - 53) - 1 === Number.POSITIVE_INFINITY; // 语句 4，true。表述「比 Math.pow(2, 1023 - 53) 小 1」不能这么使用，因为数量级的关系
 
-Number.MAX_VALUE + IEEEToDouble(`0 11111001000 ${'1'.repeat(52)}`) === Number.POSITIVE_INFINITY // 语句 5，false。真正意义上表述「比 Math.pow(2, 1023 - 53) 小 1」
+Number.MAX_VALUE + IEEEToDouble(`0 11111001000 ${"1".repeat(52)}`) ===
+  Number.POSITIVE_INFINITY; // 语句 5，false。真正意义上表述「比 Math.pow(2, 1023 - 53) 小 1」
 // 表述「比 Math.pow(2, 1023 - 53) 小 1」，尾数部分应该使用累加
-IEEEToDouble(`0 11111001000 ${'1'.repeat(52)}`) === Math.pow(2, 969) * (1+[...Array(52)].reduce((total, _, index) => total+= Math.pow(2, -(index+1)), 0))
+IEEEToDouble(`0 11111001000 ${"1".repeat(52)}`) ===
+  Math.pow(2, 969) *
+    (1 +
+      [...Array(52)].reduce(
+        (total, _, index) => (total += Math.pow(2, -(index + 1))),
+        0
+      ));
 ```
 
-综合地来看上面三个问题，可以概括为「浮点数的表示超出尾数的有效位数，舍入策略带来的精度损失使得两数相等」，而超出尾数的有效位数主要有两个场景：十进制转二进制的转换过程，以及运算过程的对阶和规格化。
+综合地来看上面三个问题，可以概括为「浮点数的表示超出尾数的有效位数时，舍入策略带来的精度损失使得两数相等」，而超出尾数的有效位数主要有两个场景：十进制转二进制的转换过程，以及运算过程的对阶和规格化。
 
 - [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
-$a^2+b^2=c^2$
+
+m 是十进制表示，n 表示 m 的最高有效位所在的位数（小数点后一位为 0）。s 是去除尾随零后的有效位的整数表示，k 是 s 的位数。
+
+```plain
+m = 8900, s = 89, k = 2, n = 2
+m = 8911, s = 8911, k = 4, n = 4
+m = 12.322, s = 12322, k = 5, n = 2
+m = 0.0012, s = 12, k = 2, n = -2
+m = 0.00000012, s = 12, k = 2, n = -6
+```
+
 `Math.log10(Math.pow(2, 53)) === 16` => 16 大概是这么来的？
 Number.EPSILON 的精度问题：Number.EPSILON 只适用于数量级为`10^0`（这里给出一个例子）
 // TODO:
