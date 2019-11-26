@@ -1,8 +1,7 @@
 - 什么是闭包：函数与对其状态即词法环境（lexical environment）的引用共同构成闭包（closure），以及闭包的应用场景
 - 浮点数运算精度问题
-- 各种排序，背包问题，二叉树算法
+- 各种排序，背包问题，二叉树算法，LRU 和 LFU
 - React 的 diff 算法
-- 中文输入触发多次问题研究 https://segmentfault.com/a/1190000013094932
 - redux 与 react-redux 等
 - 对合成层的理解
 - 活动倒计时的精确
