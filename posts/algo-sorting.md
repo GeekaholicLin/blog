@@ -135,8 +135,10 @@ const quickSort = arr => {
 ```js
 function quickSort(array) {
   // 数组分区，左小右大
+  // 如果基准数在右边的话，扫描一定要从左边开始。
+  // 这是为了保证基准数调换位置之后左边的都比基准小，右边的都比基准大
   function partition(left, right) {
-    var storeIndex = left; // 存储小于 pivot 元素的下标，初始化为 left
+    var storeIndex = left; // 存储小于 pivot 元素的下标，初始化为 left，也叫游标
     var pivot = array[right]; // 直接选最右边的元素为基准元素
     for (var i = left; i < right; i++) {
       if (array[i] < pivot) {
@@ -264,10 +266,10 @@ function selectionSort(arr) {
 
 堆和数组的对应关系：
 
-1. 设某结点序号为 i, 则其父结点为`⌊i/2⌋`，2i 为左子结点序号，2i+1 为右子结点序号。其中，`⌊⌋`为向下取整符号
+1. 设某结点序号为 i, 则其父结点为`⌊i/2⌋`，2i+1 为左子结点序号，2i+2 为右子结点序号。其中，`⌊⌋`为向下取整符号
 2. 当存储了 n 个元素时，`⌊n/2⌋+1`、`⌊n/2⌋+2`、···、n 为叶结点。
 
-![对应关系图](http://image.geekaholic.cn/Snipaste_2019-11-26_18-50-07.jpeg@0.8)
+![对应关系图](http://image.geekaholic.cn/20191127130055.jpeg@0.8)
 
 堆排序演示动画：
 
@@ -460,8 +462,6 @@ const bucketSort = arr => {
 
 ### 基数排序
 
-// TODO:
-
 基数排序是通过「分配」和「收集」过程来实现排序。
 
 工作原理是将所有待比较数值（正整数）统一为同样的数字长度，数字较短的数前面补零。然后，从最低位开始，依次进行一次排序。这样从最低位排序一直到最高位排序完成以后，数列就变成一个有序序列。
@@ -478,33 +478,64 @@ LSD 的基数排序方式是我们常见的形式，工作过程如下图：
 const LSDRadixSort = arr => {
   const max = Math.max(...arr); /* 获取最大值 */
   let digit = `${max}`.length; /* 获取最大值位数 */
-  let start = 1; /* 桶编号 */
+  let radix = 1; /* 除数 */
   let buckets = []; /* 空桶 */
   while (digit > 0) {
-    start *= 10;
     /* 入桶 */
     for (let i = 0, len = arr.length; i < len; ++i) {
-      const index = arr[i] % start;
+      const index = Math.floor(arr[i] / radix) % 10; // 取相应的位数
       if (!buckets[index]) {
         buckets[index] = [];
       }
       buckets[index].push(arr[i]); /* 往不同桶里添加数据 */
     }
     arr = [];
-    /* 出桶 */
+    /* 出桶 - 收集*/
     for (let i = 0; i < buckets.length; i++) {
       if (buckets[i]) {
         arr = arr.concat(buckets[i]);
       }
     }
     buckets = [];
+    radix *= 10;
     digit--;
   }
   return arr;
 };
 ```
 
-MSD 的基数排序方式需要使用递归。MSD 的方式由高位数为基底开始进行分配，但在分配之后并不马上合并回一个数组中，而是在每个“桶子”中建立“子桶”，将每个桶子中的数值按照下一数位的值分配到“子桶”中。在进行完最低位数的分配后再合并回单一的数组中。如下图演示：
+MSD 的基数排序方式需要使用**递归**。MSD 的方式由高位数为基底开始进行分配，但在分配之后并不马上合并回一个数组中，而是在每个「桶」中建立「子桶」，将每个「桶」中的数值按照下一数位的值分配到「子桶」中。在进行完最低位数的分配后再合并回单一的数组中。如下图演示：
+
+![MSD 基数排序](http://image.geekaholic.cn/20191127125917.png@0.8)
+
+```js
+const MSDRadixSort = (arr, highest) => {
+  if (arr.length < 2 || highest < 1) return arr;
+  const max = Math.max(...arr);
+  let digit = `${max}`.length;
+  let buckets;
+  let msd = highest || digit; // 指定的最高位，默认为数字的位数
+  let result = [];
+  buckets = [...Array(10)].map(_ => []); // 初始化
+  /* 入桶 */
+  for (let i = 0, len = arr.length; i < len; i++) {
+    if (`${arr[i]}`.length < digit) buckets[0].push(arr[i]);
+    // 没有最高位，直接压入
+    else {
+      // index 为对应位数的数字
+      const index = Math.floor(arr[i] / Math.pow(10, msd - 1)) % 10;
+      buckets[index].push(arr[i]);
+    }
+  }
+  /* 递归 */
+  for (let i = 0, len = buckets.length; i < len; i++) {
+    result = result.concat(
+      buckets[i].length >= 2 ? MSDRadixSort(buckets[i], msd - 1) : buckets[i]
+    );
+  }
+  return result;
+};
+```
 
 ### 恶搞的睡眠排序
 
