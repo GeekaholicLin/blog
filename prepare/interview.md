@@ -1,15 +1,12 @@
 - 什么是闭包：函数与对其状态即词法环境（lexical environment）的引用共同构成闭包（closure），以及闭包的应用场景
 - 浮点数运算精度问题
-- 各种排序，背包问题，二叉树算法，LRU 和 LFU
+- 背包问题，二叉树算法，LRU 和 LFU
 - React 的 diff 算法
 - redux 与 react-redux 等
 - 对合成层的理解
 - 活动倒计时的精确
 
 ---
-
-- 如何从 10000 个数中找到最大的 10 个数
-  创建一个最小堆结构，初始值为 10000 个数的前 10 个，堆顶为 10 个数里的最小数。然后遍历剩下的 9990 个数，如果数字小于堆顶的数，则直接丢弃，否则把堆顶的数删除，将遍历的数插入堆中，堆结构进行自动调整，所以可以保证堆顶的数一定是 10 个数里最小的。遍历完毕后，堆里的 10 个数就是这 10000 个数里面最大的 10 个。
 
 ---
 
@@ -31,3 +28,4 @@
 - [youngwind/blog: 梁少峰的个人博客](https://github.com/youngwind/blog)
 
 - [🚵 前端性能优化之旅 | 前端性能优化](https://alienzhou.github.io/fe-performance-journey/)
+- https://blog.csdn.net/shenjian58/article/details/89850920
