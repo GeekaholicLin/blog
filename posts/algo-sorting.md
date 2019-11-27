@@ -133,31 +133,29 @@ const quickSort = arr => {
 上面的两个版本中需要额外的 O(n) 的空间复杂度，可以采用 in-place 版本实现原地快速排序：
 
 ```js
-function quickSort(array) {
-  // 数组分区，左小右大
-  // 如果基准数在右边的话，扫描一定要从左边开始。
-  // 这是为了保证基准数调换位置之后左边的都比基准小，右边的都比基准大
-  function partition(left, right) {
-    var storeIndex = left; // 存储小于 pivot 元素的下标，初始化为 left，也叫游标
-    var pivot = array[right]; // 直接选最右边的元素为基准元素
-    for (var i = left; i < right; i++) {
-      if (array[i] < pivot) {
-        [array[storeIndex], array[i]] = [array[i], array[storeIndex]];
-        storeIndex++; // 交换位置后，storeIndex 自增 1，代表下一个可能要交换的位置
-      }
+// 数组分区，左小右大
+// 如果基准数在右边的话，扫描一定要从左边开始。
+// 这是为了保证基准数调换位置之后左边的都比基准小，右边的都比基准大
+function partition(array, left, right) {
+  var storeIndex = left; // 存储小于 pivot 元素的下标，初始化为 left，也叫游标
+  // pivot 的下标可以随机生成，防止最坏情况，但这里为了简单，默认直接选最右边
+  // const p = Math.floor(Math.random() * (right - left + 1)) + left;
+  // swap(arr, p, right); // 随机生成的 p 要交换到最右边
+  var pivot = array[right]; // 直接选最右边的元素为基准元素
+  for (var i = left; i < right; i++) {
+    if (array[i] < pivot) {
+      [array[storeIndex], array[i]] = [array[i], array[storeIndex]]; // 交换，把小的放到游标指向的位置
+      storeIndex++; // 交换位置后，storeIndex 自增 1，代表下一个可能要交换的位置
     }
-    [array[storeIndex], array[right]] = [array[right], array[storeIndex]]; // 将基准元素放置到最后的正确位置上
-    return storeIndex;
   }
-  function sort(left, right) {
-    if (left > right) {
-      return;
-    }
-    var storeIndex = partition(left, right); // 返回的 storeIndex 为基准值所在的下标
-    sort(left, storeIndex - 1);
-    sort(storeIndex + 1, right);
-  }
-  sort(0, array.length - 1);
+  [array[storeIndex], array[right]] = [array[right], array[storeIndex]]; // 将基准元素放置到最后的正确位置上
+  return storeIndex;
+}
+function quickSort(array, left = 0, right = array.length - 1) {
+  if (left >= right) return;
+  var storeIndex = partition(array, left, right); // 返回的 storeIndex 为基准值所在的下标
+  quickSort(array, left, storeIndex - 1);
+  quickSort(array, storeIndex, right);
   return array;
 }
 ```
