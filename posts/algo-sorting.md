@@ -266,7 +266,7 @@ function selectionSort(arr) {
 
 堆和数组的对应关系：
 
-1. 设某结点序号为 i, 则其父结点为`⌊i/2⌋`，2i+1 为左子结点序号，2i+2 为右子结点序号。其中，`⌊⌋`为向下取整符号
+1. 设某结点序号为 i, 则其父结点为`⌊i/2⌋`，2i+1 为左子结点序号，2i+2 为右子结点序号。其中，`⌊⌋`为向下取整符号，`i`为下标
 2. 当存储了 n 个元素时，`⌊n/2⌋+1`、`⌊n/2⌋+2`、···、n 为叶结点。
 
 ![对应关系图](http://image.geekaholic.cn/20191127130055.jpeg@0.8)
@@ -279,16 +279,18 @@ function selectionSort(arr) {
 function heapSort(arr) {
   let size = arr.length;
 
-  // 初始化堆，i 从最后一个父节点开始调整，直到节点均调整完毕
-  for (let i = Math.floor(size / 2) - 1; i >= 0; i--) {
+  // 构建堆
+  // 从最后一个节点的父节点开始「自下而上」调整，直到所有节点均调整完毕
+  // 注意 `size - 1`
+  for (let i = Math.floor((size - 1) / 2); i >= 0; i--) {
     heapify(arr, i, size);
   }
-  // 堆排序：先将第一个元素和已拍好元素前一位作交换，再重新调整，直到排序完毕
+  // 堆排序
+  // 构建好的最大堆，第一个数肯定是最大值，所以将其放到最后而最后的元素作为新的根，继续调整
   for (let i = size - 1; i > 0; i--) {
-    // swap(arr, 0, i);
     [arr[0], arr[i]] = [arr[i], arr[0]];
     size -= 1; // size 减少
-    heapify(arr, 0, size); // 对未排序的继续调整最大堆
+    heapify(arr, 0, size); // 从根节点重新递归调整
   }
 
   return arr;
@@ -312,6 +314,33 @@ function heapify(arr, index, size) {
   if (largest !== index) {
     [arr[index], arr[largest]] = [arr[largest], arr[index]];
     heapify(arr, largest, size); // 递归调整，下标为最大的数对应的下标
+  }
+}
+```
+
+以上是递归实现，下面是非递归实现，实际上就是对`heapify`进行稍微转换一下：
+
+```js
+function heapify(arr, index, size) {
+  let left = 2 * index + 1;
+  let right = 2 * index + 2;
+  let largest = index;
+  while (left < size) {
+    // 左子节点存在，说明有子节点存在
+    /* 如果有右子节点，且右子节点大于左子节点的值，则定位到右子节点 */
+    if (arr[left] > arr[largest]) {
+      largest = left;
+    }
+    if (right < size && arr[right] > arr[largest]) {
+      largest = right;
+    }
+    if (largest != index) {
+      [arr[index], arr[largest]] = [arr[largest], arr[index]];
+    } else break; // 如果没有变化，说明已经调整完成，退出
+    // 在下边更新各个值为对应的交换节点，进行子树的调整
+    index = largest;
+    left = 2 * index + 1;
+    right = 2 * index + 2;
   }
 }
 ```
