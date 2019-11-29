@@ -158,7 +158,124 @@ compiler 是针对 webpack 的，是不变的 webpack 环境，而 compilation �
 
 webpack-dev-server 集成在 webpack 中，可以通过简单的配置就能与 webpack 进行很好地交互。比如可以使用内存来存储 webpack 开发环境下的打包文件，再比如可以使用模块热更新，相比传统 http 服务器开发更加简单高效
 
+### 如何优雅地让旧项目支持 CSS Module？
+
+借助`Rule`的`oneOf`以及`resourceQuery`，可以让特定查询尾缀字符串的导入样式进行 CSS Module 的处理。
+
+```js
+// https://github.com/css-modules/css-modules/pull/65#issuecomment-355078216
+rules: [
+  {
+    test: /\.css$/,
+    oneOf: [
+      {
+        use: [require.resolve("style-loader"), require.resolve("css-loader")]
+      },
+      {
+        resourceQuery: /^\?module$/,
+        use: [
+          require.resolve("style-loader"),
+          {
+            loader: require.resolve("css-loader"),
+            options: {
+              importLoaders: 1,
+              modules: true,
+              localIdentName: "[name]__[local]___[hash:base64:5]"
+            }
+          },
+          require("./postcss-loader")
+        ]
+      }
+    ]
+  }
+];
+// import './global.css?module';
+```
+
+### css-loader 和 sass-loader 的`@import`等语法问题
+
+css-loader 对于`url()`语法不处理外部 url 以及相对于根的 url（类似`/static`，前面有`/`）语法
+
+```text
+// 相对路径语法
+url(image.png) => require('./image.png')
+url('image.png') => require('./image.png')
+url(./image.png) => require('./image.png')
+url('./image.png') => require('./image.png')
+url('http://dontwritehorriblecode.com/2112.png') => require('http://dontwritehorriblecode.com/2112.png') //
+image-set(url('image2x.png') 1x, url('image1x.png') 2x) => require('./image1x.png') and require('./image2x.png')
+// 以下为模块语法
+url(~module/image.png) => require('module/image.png')
+url('~module/image.png') => require('module/image.png')
+url(~aliasDirectory/image.png) => require('otherDirectory/image.png')
+```
+
+css-loader 的`@import`语法同理，只不过对于绝对路径和相对于根的语法而言直接不改变（比如`@import 'http://x.y/z.css'`或`@import '/a/b/c.css'`会真的变成 css 中的`@import`语法，在运行时执行导入）。
+
+sass-loader 的`@import`语法是直接将模块名字`request name`传给 webpack，让 webpack 去寻找。具体表现为：相对路径和模块语法，与 css-loader 的`@import`语法大同小异；而绝对路径或相对于根的语法都是**当作本地磁盘的目录**进行查找，所以很大可能会找不到 module。
+
+```text
+@import '~bootstrap'; // 模块语法，让 webpack 从`resolve.modules`的配置中寻找，通常是`node_modules`文件夹下
+@import './section.scss' // 相对路径
+@import "style.scss" // 相对路径，等同上面
+@import "/home/a.test" // 会当成磁盘路径进行查找
+```
+
+_而最麻烦的当属 sass-loader 的`url()`语法。_
+
+它不提供 url 覆盖（并不是指最终结果的 url 字符串覆盖，而是**模块分析过程中**的 url 覆盖），那会导致什么问题？**可能**会导致找不到`url()`所引用的 module。
+
+比如，在入口的`index.scss`文件处导入了其他目录下有着`url()`语法的 scss 文件`@import './subdir/inner.scss'`，也就是内嵌`@import`。因为`sass-loader`的处理是，在`index.scss`处将所有`@import`的内嵌模块打包到了一个文件里面，且不自动处理 url 覆盖，导致在`sass-loader`实际编译的时候，在`index.scss`文件中拥有了其他 scss 文件的`url()`语句，层级对应不上，所以`url()`导致引用的 module 找不到。
+
+如果想看原话和原来的例子，请见`resolve-url-loader`的 [README](https://github.com/bholloway/resolve-url-loader/blob/master/packages/resolve-url-loader/README.md#why)
+
+一种解决方案就是借助`resolve-url-loader`让它帮忙做 url 的覆盖，在`sass-loader`处理源文件**之后**，帮助我们处理`url()`的路径问题。
+
+```js
+rules: [
+  {
+    test: /\.scss$/,
+    use: [
+      {
+        loader: "css-loader",
+        options: {}
+      },
+      {
+        loader: "resolve-url-loader",
+        options: {}
+      },
+      {
+        loader: "sass-loader",
+        options: {
+          sourceMap: true, // sourceMap 要在 resolve-url-loader 之前
+          sourceMapContents: false
+        }
+      }
+    ]
+  }
+];
+```
+
+另外一种解决方案是用模块语法，让 webpack 去帮忙展开为对应的绝对路径而不用相对路径。具体做法是`~`符号提示 webpack 这是模块语法，再借助配置中的`resolve.alias`，比如`backgroud: url(~@resource/img.png)`
+
 ## 常见的配置问题
+
+### Webpack 配置中的 context 的作用是什么？
+
+使用一个绝对路径作为基础目录，用于从配置中解析入口起点 (entry point) 和 loader，默认值为`process.cwd()`，但推荐设置为`src`所在目录，这可以使得 webpack 配置独立于目前工作目录 CWD。
+
+这样`entry`的解析就是从`src`开始。
+
+```js
+module.exports = {
+  //...
+  entry: {
+    home: "./home.js", // 入口点就是`src/home.js`
+    about: "./about.js",
+    contact: "./contact.js"
+  }
+};
+```
 
 ### Webpack 配置中的 entry 和 output 的作用是什么
 
@@ -346,6 +463,9 @@ loader 用于转换某些类型的模块，而 plugin 则可以用于执行范�
 ### 有哪些常见的 Loader 且用处是什么
 
 - file-loader：把文件输出到一个文件夹中，在代码中通过相对 URL 去引用输出的文件
+
+我们都知道，webpack 最终会将各个模块打包成一个文件，因此我们样式中的 url 路径是相对入口 html 页面的，而不是相对于原始 css 文件所在的路径的。这就会导致图片引入失败。这个问题是用 file-loader 解决的，file-loader 可以解析项目中的 url 引入（不仅限于 css），根据我们的配置，将图片拷贝到相应的路径，再根据我们的配置，修改打包后文件引用路径，使之指向正确的文件。
+
 - url-loader：和 file-loader 类似，但是能在文件很小的情况下以 base64 的方式把文件内容注入到代码中去
 - source-map-loader：常用于提取提供 source-map 的第三方库内部的 source-map，以方便断点调试
 - image-loader：加载并且压缩图片文件
@@ -353,6 +473,33 @@ loader 用于转换某些类型的模块，而 plugin 则可以用于执行范�
 - css-loader：加载 CSS，支持模块化（CSS module）、文件导入（`@import`）等特性
 - style-loader：把 CSS 代码注入到 DOM（内联的形式）。
 - eslint-loader：通过 ESLint 检查 JavaScript 代码
+- sass-resources-loader: 为每个导入的 scss 等样式文件（less 也支持）自动在头部使用`@import`
+
+```js
+// webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      test: /\/scss$/,
+      use:[
+        'style-loader',
+        'css-loader',
+        'postcss-loader',
+        'sass-loader',
+        {
+            loader: 'sass-resources-loader',
+            options: {
+              resources: [
+                path.resolve(__dirname, './client/styles/variable.scss'),
+                path.resolve(__dirname, './client/styles/mixins.scss')]
+            }
+          }
+      ]
+    ]
+  }
+}
+
+```
 
 ### 有哪些常见的 Plugin 且用处是什么
 

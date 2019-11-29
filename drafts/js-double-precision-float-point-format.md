@@ -504,16 +504,6 @@ IEEEToDouble(`0 11111001000 ${"1".repeat(52)}`) ===
 
 - [floating point - How does javascript print 0.1 with such accuracy? - Stack Overflow](https://stackoverflow.com/questions/28494758/how-does-javascript-print-0-1-with-such-accuracy)
 
-m 是十进制表示，n 表示 m 的最高有效位所在的位数（小数点后一位为 0）。s 是去除尾随零后的有效位的整数表示，k 是 s 的位数。
-
-```plain
-m = 8900, s = 89, k = 2, n = 2
-m = 8911, s = 8911, k = 4, n = 4
-m = 12.322, s = 12322, k = 5, n = 2
-m = 0.0012, s = 12, k = 2, n = -2
-m = 0.00000012, s = 12, k = 2, n = -6
-```
-
 `Math.log10(Math.pow(2, 53)) === 16` => 16 大概是这么来的？
 Number.EPSILON 的精度问题：Number.EPSILON 只适用于数量级为`10^0`（这里给出一个例子）
 // TODO:
