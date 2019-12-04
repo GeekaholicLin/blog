@@ -79,3 +79,5 @@
 - [Aw, Snap! Something went wrong while displaying this webpage.](https://blog.joouis.com/2018/05/25/optimization-road-of-count-down-timer/)
 - [从 Preact 中了解 React 组件和 hooks 基本原理 - 掘金](https://juejin.im/post/5cfa29e151882539c33e4f5e)
 - [React fiber 源码理解 - 知乎](https://zhuanlan.zhihu.com/p/77294188)
+
+* [Build your own React](https://pomb.us/build-your-own-react/)
