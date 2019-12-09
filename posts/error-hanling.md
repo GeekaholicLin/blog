@@ -1,4 +1,3 @@
-
 对于 JS 而言，异常的出现不会直接导致 JS 引擎崩溃，最多只会使当前执行的任务终止。
 
 ### 代码块级别
@@ -12,17 +11,19 @@ Promise 的**构造函数**，以及被 `then`调用执行的函数基本上都�
 从 Babel 编译后的代码来看，`async...await`能正常地被`try-catch`捕获异常的原因，主要是未完成时`Promise.resolve(value).then(_next, _throw)`。当`asyncFunc`的 promise 中出现异常或 reject 拒绝时，相当于执行了`_throw`，调用`generator`对象的`thow`方法，所以会抛出异常进入`catch`子句。
 
 ```js
-var asyncFunc = () => new Promise((resolve, reject) => {
-  setTimeout(() => {// 模拟请求
-    reject('Error!')
-  }, 1000)
-})
+var asyncFunc = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // 模拟请求
+      reject("Error!");
+    }, 1000);
+  });
 
-async function main () {
+async function main() {
   try {
     const res = await asyncFunc();
     console.log(res);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 }
@@ -40,38 +41,40 @@ function to(promise, errorHandler) {
       return [null, data];
     })
     .catch(function(err) {
-      if(errorHandler) errorHandler(err)
+      if (errorHandler) errorHandler(err);
       return [err, undefined];
     });
 }
 
 // 自定义异常
 class FetchError extends Error {
-  constructor({ code, message }){
-    super(message)
-    this.code = code || 200000
+  constructor({ code, message }) {
+    super(message);
+    this.code = code || 200000;
   }
 }
 // 异常处理方法
-function fetchErrorHandler(err){
-  if(err instanceof FetchError){
-    console.log('处理异常')
+function fetchErrorHandler(err) {
+  if (err instanceof FetchError) {
+    console.log("处理异常");
   }
 }
 // 模拟出错的 promise
-var asyncFunc = () => new Promise((resolve, reject) => {
-  setTimeout(() => {// 模拟请求
-    reject(new FetchError({ message: 'fetch_error' }))
-  }, 1000)
-})
-async function main () {
-  const [err, res] = await to(asyncFunc(), fetchErrorHandler)
-  if(err) { // 除了 fetchErrorHandler 的通用处理，还可以有其他特别处理
-    console.log('做一些特别的处理');
+var asyncFunc = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // 模拟请求
+      reject(new FetchError({ message: "fetch_error" }));
+    }, 1000);
+  });
+async function main() {
+  const [err, res] = await to(asyncFunc(), fetchErrorHandler);
+  if (err) {
+    // 除了 fetchErrorHandler 的通用处理，还可以有其他特别处理
+    console.log("做一些特别的处理");
     return;
   }
 }
-
 ```
 
 ### 全局处理
@@ -89,6 +92,7 @@ async function main () {
 优点：可以捕获异步异常
 
 缺点：
+
 - 无法捕获语法错误
 - 无法处理静态资源加载失败的异常。当一项资源（如`<img>`或`<script>`）加载失败，加载资源的元素会触发一个 Event 接口的 error 事件，并执行该元素上的`onerror()`处理函数。_这些 error 事件不会向上冒泡到 window_。
 
@@ -119,11 +123,11 @@ Jartto‘; // Uncaught SyntaxError，语法错误
 为了防止有漏掉的 Promise 异常，建议在全局增加一个对`unhandledrejection`的监听。
 
 ```js
-window.addEventListener("unhandledrejection", function(e){
-  e.preventDefault() // 阻止冒泡，让控制台不显示错误
-  console.log('捕获到异常：', e);
+window.addEventListener("unhandledrejection", function(e) {
+  e.preventDefault(); // 阻止冒泡，让控制台不显示错误
+  console.log("捕获到异常：", e);
 });
-Promise.reject('promise error');
+Promise.reject("promise error");
 ```
 
 ### 特殊场景
@@ -133,10 +137,16 @@ Promise.reject('promise error');
 同域 iframe 的异常需要使用`window.onerror`。不同域且非第三方（开发者拥有控制权）的情况可以借助跨域通信手段，将错误信息传递出来。
 
 ```js
- window.frames[0].onerror = function (message, source, lineno, colno, error) {
-    console.log('捕获到 iframe 异常：',{message, source, lineno, colno, error});
-    return true;
-  };
+window.frames[0].onerror = function(message, source, lineno, colno, error) {
+  console.log("捕获到 iframe 异常：", {
+    message,
+    source,
+    lineno,
+    colno,
+    error
+  });
+  return true;
+};
 ```
 
 #### 跨域脚本
@@ -154,24 +164,23 @@ Promise.reject('promise error');
 ```js
 // index.html
 const originAddEventListener = EventTarget.prototype.addEventListener;
-EventTarget.prototype.addEventListener = function (type, listener, options) {
-  const addStack = new Error(`Event (${type})`).stack // 用于异常发生时，当前信息加入错误堆栈
-  const wrappedListener = function (...args) {
+EventTarget.prototype.addEventListener = function(type, listener, options) {
+  const addStack = new Error(`Event (${type})`).stack; // 用于异常发生时，当前信息加入错误堆栈
+  const wrappedListener = function(...args) {
     try {
       // 核心所在，将原有的 listener 包裹在 try...catch 中
       return listener.apply(this, args);
-    }
-    catch (err) {
-      err.stack += '\n' + addStack
+    } catch (err) {
+      err.stack += "\n" + addStack;
       throw err;
     }
-  }
+  };
   return originAddEventListener.call(this, type, wrappedListener, options);
-}
+};
 // iframe.html
-const btn4k = document.querySelector('#btn-4000');
-btn4k.addEventListener('click', () => {
-  throw new Error('Fail 4000');
+const btn4k = document.querySelector("#btn-4000");
+btn4k.addEventListener("click", () => {
+  throw new Error("Fail 4000");
 });
 ```
 
@@ -183,13 +192,13 @@ React 16 引入的错误边界`Error Boundary`是为了捕获 UI 渲染过程中
 
 #### Koa
 
-oa 中的错误处理相关：[Error-Handling](https://github.com/koajs/koa/wiki/Error-Handling) 以及 [Koa 中的错误处理](https://www.cnblogs.com/Wayou/p/error_handling_in_koajs.html)
+koa 中的错误处理相关：[Error-Handling](https://github.com/koajs/koa/wiki/Error-Handling) 以及 [Koa 中的错误处理](https://www.cnblogs.com/Wayou/p/error_handling_in_koajs.html)
 
 ### 总结
 
 - `try...catch`可捕获同步异常，无法捕获异步异常以及语法错误
 - `window.onerror`可捕获同步与异步异常，无法捕获静态资源错误与语法错误
-- `window.addEventListener('error')`可捕获同步、异步以及静态资源异常，无法捕获语法错误，但要注意重复上报问题
+- `window.addEventListener('error')`可捕获同步、异步以及静态资源异常，无法捕获语法错误。建议只有`event.target`是`HTMLScriptElement`、`HTMLLinkElement`或`HTMLImageElement`实例的时候才在`window.addEventListener`中上报异常，但要注意重复上报问题
 - `window.addEventListener('unhandledrejection')`处理未被 catch 的 promise 异常
 
 需要注意的是异步异常的范围，XHR 对象的异常由`xhr.addEventListener('error')`进行处理，无法被`window.onerror`或`window.addEventListener('error')`进行捕获
