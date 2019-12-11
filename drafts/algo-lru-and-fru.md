@@ -28,10 +28,6 @@ LFU，全称「Least Frequently Used」，最不常用算法
 
 缺点：开始时频繁使用，但以后不使用的页面很难置换。
 
-### LFU 算法实现
-
-// TODO:
-
 ## LRU-最近最久未使用
 
 LRU，全称「Least Recently Used」，最近最久未使用算法。
