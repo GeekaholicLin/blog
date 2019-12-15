@@ -1,4 +1,5 @@
 ### 大致过程
+
 Babel 的转换 总共分为三个阶段：解析（parse）、转换（transform）以及生成（generate）。
 
 ![Babel 运行过程](http://image.geekaholic.cn/20191107114744.png@0.8)
@@ -103,7 +104,7 @@ const MyVisitor = {
   Identifier(path) {
     console.log("Called!");
   }
-}
+};
 // 两个触发时机
 const MyVisitor = {
   Identifier: {
@@ -117,10 +118,10 @@ const MyVisitor = {
 };
 // 多个节点类型共用一套逻辑
 const visitor = {
-  'FunctionExpression|ArrowFunctionExpression' () {
-    console.log('A function expression or a arrow function expression!')
+  "FunctionExpression|ArrowFunctionExpression"() {
+    console.log("A function expression or a arrow function expression!");
   }
-}
+};
 ```
 
 而在 Babel 中，多个插件的情况会怎么应用？在访问某个节点的时候，会根据 Plugin 定义的顺序或者 preset 定义的逆序，依次触发对应的访问者中的具体方法。逻辑数据结构如下：
@@ -128,10 +129,9 @@ const visitor = {
 ```js
 {
   Identifier: {
-    enter: [plugin-xx, plugin-yy,] // 数组形式
+    enter: [plugin - xx, plugin - yy]; // 数组形式
   }
 }
-
 ```
 
 编写访问者对象是 Babel 插件编写中最重要的一部分。_编写的宗旨是不能破坏修改部分以外的其他代码，保证程序的正确性_，而编写过程中也有一些概念以及注意事项是需要我们了解的。
@@ -172,7 +172,6 @@ const MyVisitor = {
     }
   }
 };
-
 ```
 
 以上访问者的编写错误在于，`Identifier`节点有可能是函数之外的，会污染函数之外的部分。正确的做法应该是遍历传递 `paramName`：
@@ -259,9 +258,9 @@ traverse(ast, {
 下面给出一个来自 [文章](https://juejin.im/post/5d94bfbf5188256db95589be) 的例子：
 
 ```js
-import { parse } from '@babel/parser'
-import traverse from '@babel/traverse'
-import generate from "@babel/generator"
+import { parse } from "@babel/parser";
+import traverse from "@babel/traverse";
+import generate from "@babel/generator";
 
 // 要求：对 add 函数中的 foo 重命名
 
@@ -272,29 +271,28 @@ function add(foo, bar) {
     const a = '1' // 新增了一个变量声明
     return a + (foo + bar)
   }
-}`)
+}`);
 traverse(ast, {
   FunctionDeclaration(path) {
-    const firstParam = path.get('params.0') // 获取第一个参数
+    const firstParam = path.get("params.0"); // 获取第一个参数
     // 需要函数为 add 且第一个参数为 foo
     if (
-      !firstParam
-      || firstParam.node.name !== 'foo'
-      || firstParam.parent.id.name !== 'add'
+      !firstParam ||
+      firstParam.node.name !== "foo" ||
+      firstParam.parent.id.name !== "add"
     ) {
-      return
+      return;
     }
-    let i = path.scope.generateUidIdentifier('_') // 1. 生成唯一标识符对象
-    const currentBinding = path.scope.getBinding(firstParam.node.name) // 2. 获取引用的绑定对象
-    currentBinding.referencePaths.forEach(p => p.replaceWith(i)) // 3. 对引用所有引用路径进行修改
-    firstParam.replaceWith(i) // 4. 第一个参数本身进行修改
+    let i = path.scope.generateUidIdentifier("_"); // 1. 生成唯一标识符对象
+    const currentBinding = path.scope.getBinding(firstParam.node.name); // 2. 获取引用的绑定对象
+    currentBinding.referencePaths.forEach(p => p.replaceWith(i)); // 3. 对引用所有引用路径进行修改
+    firstParam.replaceWith(i); // 4. 第一个参数本身进行修改
     // 5～6 的效果如同 1～4
     // let i = path.scope.generateUid('_') // 5. 生成唯一标识符字符串
     // path.scope.rename(firstParam.node.name, i) // 6. 重命名
-  },
-})
-console.log(generate(ast).code)
-
+  }
+});
+console.log(generate(ast).code);
 ```
 
 ### 插件开发常用到的工具
@@ -338,8 +336,8 @@ defineType("BinaryExpression", {
 而各个部分的`validate`属性就是`validator`验证器了，其用于表明组成当前节点的子节点的类型以及验证方式。当代码中组成节点的子节点类型，与定义对应的验证器不符，**可以选择**返回布尔值或者抛出异常。
 
 ```js
-t.isBinaryExpression(maybeBinaryExpressionNode) // types.isxxxx() 返回布尔值
-t.isBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }) // 同上，且限制了相关子节点的精确匹配值
+t.isBinaryExpression(maybeBinaryExpressionNode); // types.isxxxx() 返回布尔值
+t.isBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }); // 同上，且限制了相关子节点的精确匹配值
 t.assertBinaryExpression(maybeBinaryExpressionNode); // types.assertxxxx() 如果不通过抛出异常
 t.assertBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }); // 同上，且限制相关子节点的精确匹配值
 ```
@@ -349,25 +347,25 @@ t.assertBinaryExpression(maybeBinaryExpressionNode, { operator: "*" }); // 同�
 ```js
 // @babel/template 的使用
 import template from "@babel/template";
-import generate from "@babel/generator"
-import * as t from "@babel/types"
+import generate from "@babel/generator";
+import * as t from "@babel/types";
 
 const buildRequire = template(`
   var IMPORT_NAME = require(SOURCE);
-`)
+`);
 
 const ast = buildRequire({
-  IMPORT_NAME: t.identifier('myModuleName'),
-  SOURCE: t.stringLiteral('./my-module/index.js')
-})
-console.log(generate(ast).code) // 'var myModuleName = require("./my-module/index.js");'
+  IMPORT_NAME: t.identifier("myModuleName"),
+  SOURCE: t.stringLiteral("./my-module/index.js")
+});
+console.log(generate(ast).code); // 'var myModuleName = require("./my-module/index.js");'
 ```
 
 ---
 
 参考：
 
-* [jamiebuilds/the-super-tiny-compiler: Possibly the smallest compiler ever](https://github.com/jamiebuilds/the-super-tiny-compiler)
-* [babel-handbook/plugin-handbook.md at master · jamiebuilds/babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
-* [Babel 插件原理的理解与深入](https://github.com/frontend9/fe9-library/issues/154)
-* [深入浅出 Babel 上篇：架构和原理 + 实战](https://juejin.im/post/5d94bfbf5188256db95589be)
+- [jamiebuilds/the-super-tiny-compiler: Possibly the smallest compiler ever](https://github.com/jamiebuilds/the-super-tiny-compiler)
+- [babel-handbook/plugin-handbook.md at master · jamiebuilds/babel-handbook](https://github.com/jamiebuilds/babel-handbook/blob/master/translations/zh-Hans/plugin-handbook.md)
+- [Babel 插件原理的理解与深入](https://github.com/frontend9/fe9-library/issues/154)
+- [深入浅出 Babel 上篇：架构和原理 + 实战](https://juejin.im/post/5d94bfbf5188256db95589be)

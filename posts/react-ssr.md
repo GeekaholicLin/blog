@@ -48,6 +48,6 @@ node 服务端接收请求 -> 通过请求 path 解析并匹配路由，查找�
 
 ## 参考
 
-* [React 中同构（SSR）原理脉络梳理 - 掘金](https://juejin.im/post/5bc7ea48e51d450e46289eab)
-* [React 同构直出优化总结 | AlloyTeam](http://www.alloyteam.com/2016/06/react-isomorphic/)
-* [从零开始 React 服务器渲染（SSR）同构😏（基于 Koa） - 掘金](https://juejin.im/post/5c627d9b6fb9a049f23d3e38#heading-15)
+- [React 中同构（SSR）原理脉络梳理 - 掘金](https://juejin.im/post/5bc7ea48e51d450e46289eab)
+- [React 同构直出优化总结 | AlloyTeam](http://www.alloyteam.com/2016/06/react-isomorphic/)
+- [从零开始 React 服务器渲染（SSR）同构 😏（基于 Koa） - 掘金](https://juejin.im/post/5c627d9b6fb9a049f23d3e38#heading-15)
